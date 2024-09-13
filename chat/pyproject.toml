@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "chat"
+version = "0.1.0"
+description = "Chat UI"
+authors = ["sad-zero <zeroro.yun@gmail.com>"]
+readme = "README.md"
+packages = [{include = "chat", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "~3.11"
+core = {path="../core", develop=true}
+streamlit = "1.38.0"
+python-dotenv = "1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
