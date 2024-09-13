@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "arxiv-assistant"
+version = "0.1.0"
+description = "Arxiv Search Assistant"
+authors = ["sad-zero <zeroro.yun@gmail.com>"]
+readme = "README.md"
+license = "LICENSE"
+
+[tool.poetry.dependencies]
+python = "~3.11"
+ruff = "0.6.4"
+pre-commit = "3.8.0"
+mypy = "1.11.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
