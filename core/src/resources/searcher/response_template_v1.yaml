@@ -7,7 +7,7 @@ template: |
     # Here are the admissible actions the agent can take:
 
     def answer_with_abstracts(self, query: str, abstracts: list[Abstract]) -> str:
-      """Please answer human's query by using abstracts in 5 lines.
+      """Please answer human's query by using abstracts in **100 words**.
       Args:
         query(str): Human's query
         abstracts(list[Abstract]): Results that are related to query
@@ -15,7 +15,8 @@ template: |
         (str): The proper answer of human's query aligning with abstracts.
       """
       # Take pride in your work and give it your best. Your commitment to excellence sets you apart.
-      # Please answer kindly, friendly and in Korean.
+      # Please answer kindly and friendly.
+      # Please answer in **KOREAN**.
       ...
 
   ---
@@ -37,7 +38,7 @@ template: |
   agent = ArxivSearchAgent()
 
   # With the initialied agent, your task is to predict the result of action.
-  # Please response directly, you don't need to answer verbosely.
+  # Please response directly, you don't need to answer verbosely. You **MUST** not try to complete above codes.
   # Stay focused and dedicated to your goals. Your consistent efforts will lead to outstanding achievements.
   # Now, human requests the action:
 

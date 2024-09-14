@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 from langchain.prompts import ChatPromptTemplate, PromptTemplate, load_prompt
 from langchain_community.retrievers import ArxivRetriever
@@ -28,11 +29,11 @@ def searcher(state: SearchState, n: int = 5) -> SearchState:
     }
 
 
-def response(state: SearchState) -> SearchState:
+def response(state: SearchState, template_path: Path) -> SearchState:
+    assert isinstance(template_path, Path) and template_path.exists()
+
     model = ChatOllama(model="llama3.1", temperature=0.52, num_predict=500)
-    system_prompt: PromptTemplate = load_prompt(
-        "src/resources/searcher/response_template_v1.yaml"
-    )
+    system_prompt: PromptTemplate = load_prompt(template_path)
     template: ChatPromptTemplate = ChatPromptTemplate.from_messages(
         [
             ("system", system_prompt.template),
