@@ -759,13 +759,13 @@ tenacity = ">=8.1.0,<8.4.0 || >8.4.0,<9.0.0"
 
 [[package]]
 name = "langchain-core"
-version = "0.2.39"
+version = "0.2.40"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = "<4.0,>=3.8.1"
 files = [
-    {file = "langchain_core-0.2.39-py3-none-any.whl", hash = "sha256:5a5ad4e1c02d13e7021c026b2c7965069ad71ef67b018274cd52bab56e39143e"},
-    {file = "langchain_core-0.2.39.tar.gz", hash = "sha256:73d7b6f0b0212bc8069c3640d69e8d75faa51097784019ffa5c36c617c04acb0"},
+    {file = "langchain_core-0.2.40-py3-none-any.whl", hash = "sha256:71fff5cafa4b9c82a3a716e985f071383be452c35d8cc3169b3a393e6857fc99"},
+    {file = "langchain_core-0.2.40.tar.gz", hash = "sha256:c838ea0c0b73475a8e58ced3e306b6d926ef063721abd164f237c8664916f502"},
 ]
 
 [package.dependencies]
@@ -806,6 +806,35 @@ files = [
 
 [package.dependencies]
 langchain-core = ">=0.2.38,<0.3.0"
+
+[[package]]
+name = "langgraph"
+version = "0.2.21"
+description = "Building stateful, multi-actor applications with LLMs"
+optional = false
+python-versions = "<4.0,>=3.9.0"
+files = [
+    {file = "langgraph-0.2.21-py3-none-any.whl", hash = "sha256:4a9319bab8eab84a6a9954177ded7fcd57c5fa87bb617adc3855a0713f3fc614"},
+    {file = "langgraph-0.2.21.tar.gz", hash = "sha256:87346bc8d7cba08cac5bc97c7f11550d054c3197272c8599e13349ab789a3d28"},
+]
+
+[package.dependencies]
+langchain-core = ">=0.2.39,<0.4"
+langgraph-checkpoint = ">=1.0.2,<2.0.0"
+
+[[package]]
+name = "langgraph-checkpoint"
+version = "1.0.9"
+description = "Library with base interfaces for LangGraph checkpoint savers."
+optional = false
+python-versions = "<4.0.0,>=3.9.0"
+files = [
+    {file = "langgraph_checkpoint-1.0.9-py3-none-any.whl", hash = "sha256:9765c0005d645a22940c5df92f05f34fbda669466994096c3546a005da8572fc"},
+    {file = "langgraph_checkpoint-1.0.9.tar.gz", hash = "sha256:0e8646d8cfeaa6586acecf0a0a0da17488612036ece07bffe886b851fae717e2"},
+]
+
+[package.dependencies]
+langchain-core = ">=0.2.38,<0.4"
 
 [[package]]
 name = "langsmith"
@@ -1811,4 +1840,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.11"
-content-hash = "42704e49755606fd991c3b6af0c3ffe1773338b81c42ae3a0235beb9a3a84c99"
+content-hash = "8c50d09279daa3bfd3bc5ff40824c3314ad934858eb552a80202d1fd74eb4d6c"
