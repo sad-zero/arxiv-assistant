@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date
 from typing import Generic, List, TypeVar, TypedDict
 
 
@@ -11,13 +11,13 @@ class Abstract:
     title: str
     abstract: str
     link: str
-    written_at: datetime
+    written_at: date
 
     def __post_init__(self):
         assert isinstance(self.title, str)
         assert isinstance(self.abstract, str)
         assert self.link is not None and validate_url(self.link)
-        assert isinstance(self.written_at, datetime)
+        assert isinstance(self.written_at, date)
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,6 +53,10 @@ T = TypeVar("T")
 class Result(Generic[T]):
     answer: str
     data: T
+
+    def __post_init__(self):
+        assert isinstance(self.answer, str)
+        assert self.data is not None
 
 
 class SearchState(TypedDict):
