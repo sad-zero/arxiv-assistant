@@ -3,7 +3,7 @@
 from functools import partial
 from pathlib import Path
 from core.application.input_port import ArxivSearcher
-from core.application.output_port import response, searcher
+from core.framework.driven_adaptor import response, searcher
 
 
 def get_arxiv_searcher():
