@@ -5,7 +5,7 @@ from langchain_community.retrievers import ArxivRetriever
 from langchain.schema import Document as LangchainDocument, StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_ollama import ChatOllama
-from core.application.util import OllamaCallbacks
+from core.framework.util import OllamaCallbacks
 from core.domain.vo import Abstract, SearchState
 
 
