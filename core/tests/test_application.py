@@ -4,9 +4,9 @@ from typing import Callable, List
 
 from langchain.prompts import ChatPromptTemplate, PromptTemplate, load_prompt
 from langchain.schema import StrOutputParser
+from langchain_community.llms.fake import FakeListLLM
 from langchain_core.language_models import BaseChatModel
 from langchain_core.runnables import RunnablePassthrough
-from langchain_ollama import ChatOllama
 import pytest
 from core.application.input_port import ArxivSearcher
 from core.application.output_port import ArxivSearcherOutputPort
@@ -73,14 +73,23 @@ def arxiv_searcher_output_port() -> ArxivSearcherOutputPort:
     return StubArxivSearcherOutputPort()
 
 
-def test_arxiv_searcher(arxiv_searcher_output_port: ArxivSearcherOutputPort):
+@pytest.fixture(scope="module")
+def fake_chat_llm() -> BaseChatModel:
+    class FakeChatLLM(FakeListLLM, BaseChatModel):
+        pass
+
+    return FakeChatLLM(responses=["Test Answer"])
+
+
+def test_arxiv_searcher(
+    arxiv_searcher_output_port: ArxivSearcherOutputPort, fake_chat_llm: BaseChatModel
+):
     # given
     max_documents = 5
-    model = ChatOllama(model="llama3.1", temperature=0.52, num_predict=500)
     arxiv_searcher = ArxivSearcher(
         arxiv_searcher_output_port=arxiv_searcher_output_port,
         max_documents=max_documents,
-        model=model,
+        model=fake_chat_llm,
         prompt_templates={
             "response": Path("src/resources/searcher/response_template_v1.yaml"),
         },
@@ -89,7 +98,7 @@ def test_arxiv_searcher(arxiv_searcher_output_port: ArxivSearcherOutputPort):
     # when
     result: Result[List[Abstract]] = arxiv_searcher.search(query)
     # then
-    assert result.answer.strip() != ""
+    assert result.answer == "Test Answer"
     assert isinstance(result.data, list) and all(
         isinstance(abstract, Abstract) for abstract in result.data
     )
