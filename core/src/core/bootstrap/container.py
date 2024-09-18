@@ -5,11 +5,32 @@ from typing import Any, Dict, Literal, Union
 
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Dependency, Singleton
+from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from core.application.input_port import ArxivSearcher
 from core.application.output_port import ArxivSearcherOutputPort
 from core.bootstrap.vo import ArxivSearcherConfig
 from core.framework.driven_adaptor import ArxivSearcherDrivenAdaptor
 from core.framework.driving_adaptor import ArxivAgent
+from core.framework.vo import ModelType
+
+
+class ModelContainer(DeclarativeContainer):
+    config = Configuration()
+
+    ollama_llama3_1: ChatOllama = Singleton(
+        ChatOllama,
+        model="llama3.1",
+        temperature=0.52,
+        num_predicts=500,
+    )
+    openai_gpt4o: ChatOpenAI = Singleton(
+        ChatOpenAI,
+        model="gpt4o",
+        temperature=0.52,
+        max_tokens=500,
+        api_key=config.openai.api_key,
+    )
 
 
 class ApplicationOutputPortContainer(DeclarativeContainer):
@@ -21,7 +42,7 @@ class ApplicationOutputPortContainer(DeclarativeContainer):
 class ApplicationUsecaseContainer(DeclarativeContainer):
     config = Configuration()
     arxiv_searcher_output_port: ArxivSearcherOutputPort = Dependency(
-        ArxivSearcherOutputPort
+        instance_of=ArxivSearcherOutputPort,
     )
 
     arxiv_searcher: ArxivSearcher = Singleton(
@@ -58,15 +79,25 @@ def get_prompt_templates(type_: Literal["arxiv_searcher"]) -> Dict[str, Path]:
 
 def initialize(
     configs: Dict[Literal["arxiv_searcher"], Union[ArxivSearcherConfig]],
+    openai_key: str,
 ) -> ArxivAgent:
     assert isinstance(configs, dict)
     assert "arxiv_searcher" in configs and isinstance(
         configs["arxiv_searcher"], ArxivSearcherConfig
     )
+    assert isinstance(openai_key, str)
+
+    model_container = ModelContainer()
+    model_container.config.from_dict(
+        {
+            "openai": {
+                "api_key": openai_key,
+            },
+        }
+    )
 
     application_output_port_container = ApplicationOutputPortContainer()
     application_output_port_container.check_dependencies()
-
     application_usecase_container = ApplicationUsecaseContainer(
         arxiv_searcher_output_port=application_output_port_container.arxiv_searcher_output_port(),
     )
@@ -78,6 +109,15 @@ def initialize(
     config_dictionaries["arxiv_searcher"]["prompt_templates"] = get_prompt_templates(
         "arxiv_searcher"
     )
+    if configs["arxiv_searcher"].model_type == ModelType.OLLAMA_LLAMA3_1:
+        config_dictionaries["arxiv_searcher"]["model"] = (
+            model_container.ollama_llama3_1()
+        )
+    elif configs["arxiv_searcher"].model_type == ModelType.OPENAI_GPT4o:
+        config_dictionaries["arxiv_searcher"]["model"] = model_container.openai_gpt4o()
+    else:
+        raise RuntimeError(f"Not supported model type: {configs['arxiv_searcher']}")
+
     application_usecase_container.config.from_dict(config_dictionaries)
 
     framework_driving_container = FrameworkDrivingContainer(
