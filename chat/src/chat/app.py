@@ -2,7 +2,7 @@ import logging
 import streamlit as st
 
 from core.bootstrap.container import initialize
-from core.bootstrap.vo import ArxivSearcherConfig
+from core.bootstrap.vo import ArxivSearcherConfig, AzureConfig
 from core.bootstrap.vo import ModelType
 from core.framework.driving_adaptor import ArxivAgent
 
@@ -22,6 +22,21 @@ with st.sidebar:
             "OpenAI API Key", key="chatbot_api_key", type="password"
         )
         "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
+
+        with st.container(border=True):
+            "Azure AI Studio Config"
+            endpoint: str = st.text_input("Azure AI Studio Deployment's endpoint")
+            deployment: str = st.text_input("Azure AI Studio Deployment's name")
+            api_version: str = st.text_input("Azure AI Studio Deployment's api version")
+            api_key: str = st.text_input(
+                "Azure AI Studio Deployment's secret", type="password"
+            )
+            azure_config: AzureConfig = AzureConfig(
+                endpoint=endpoint,
+                deployment=deployment,
+                api_version=api_version,
+                api_key=api_key,
+            )
     with st.container(border=True):
         "Arxiv Searcher Options"
         model_type_str: str = st.selectbox(
@@ -56,10 +71,10 @@ for msg in st.session_state.messages:
 if query := st.chat_input(placeholder="What is prompt engineering?"):
     st.session_state.messages.append({"role": "user", "content": query})
     st.chat_message("user").markdown(query)
-
     arxiv_agent: ArxivAgent = initialize(
         configs={
             "arxiv_searcher": arxiv_searcher_config,
+            "azure": azure_config,
         },
         openai_key=openai_api_key,
     )
