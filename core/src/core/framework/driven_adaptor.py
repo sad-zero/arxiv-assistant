@@ -16,6 +16,7 @@ class ArxivSearcherDrivenAdaptor(ArxivSearcherOutputPort):
 
         def _searcher(state: SearchState) -> SearchState:
             retriever = ArxivRetriever(
+                top_k_results=n,
                 load_max_docs=n,
                 get_full_documents=False,
             )

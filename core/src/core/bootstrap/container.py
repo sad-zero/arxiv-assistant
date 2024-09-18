@@ -24,9 +24,16 @@ class ModelContainer(DeclarativeContainer):
         temperature=0.52,
         num_predicts=500,
     )
-    openai_gpt4o: ChatOpenAI = Singleton(
+    openai_gpt4o_mini: ChatOpenAI = Singleton(
         ChatOpenAI,
-        model="gpt4o",
+        model="gpt-4o-mini",
+        temperature=0.52,
+        max_tokens=500,
+        api_key=config.openai.api_key,
+    )
+    openai_gpt3_5_turbo: ChatOpenAI = Singleton(
+        ChatOpenAI,
+        model="gpt-3.5-turbo",
         temperature=0.52,
         max_tokens=500,
         api_key=config.openai.api_key,
@@ -113,8 +120,14 @@ def initialize(
         config_dictionaries["arxiv_searcher"]["model"] = (
             model_container.ollama_llama3_1()
         )
-    elif configs["arxiv_searcher"].model_type == ModelType.OPENAI_GPT4o:
-        config_dictionaries["arxiv_searcher"]["model"] = model_container.openai_gpt4o()
+    elif configs["arxiv_searcher"].model_type == ModelType.OPENAI_GPT4o_mini:
+        config_dictionaries["arxiv_searcher"]["model"] = (
+            model_container.openai_gpt4o_mini()
+        )
+    elif configs["arxiv_searcher"].model_type == ModelType.OPENAI_GPT3_5_turbo:
+        config_dictionaries["arxiv_searcher"]["model"] = (
+            model_container.openai_gpt3_5_turbo()
+        )
     else:
         raise RuntimeError(f"Not supported model type: {configs['arxiv_searcher']}")
 
